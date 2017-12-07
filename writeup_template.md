@@ -32,6 +32,22 @@ I have used the following software/libraries in this project
 6. SciKit
 7. SciPy
 
+## Detailed explanation of the steps followed
+
+In this section I will go through each of the steps that I followed in this project.
+
+### Step 1: Define helper functions and load Training data and Visualize some sample images
+
+In this step I have defined functions ```get_hog_features``` ```bin_spatial``` and ```color_hist``` for features extraction (HOG, binned color and color histogram features) 
+
+### Step 2: Convert Image to HOG (Histogram of Oriented Gradients) and Visualize them using helper functions
+
+I have started by loading the training data and checked the number of images in both Cars and Non-Cars Classes and found that the number of images in both the classes are approximately same and hence no need for further data augumentation. Then I Visualized some sample images from both the classes.
+
+![Sample Images](folder_for_writeup/car_non_car_samples.png)
+
+
+
 
 **Vehicle Detection Project**
 
