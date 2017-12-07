@@ -97,6 +97,7 @@ Initially I tested for the time taken for Feature Extraction for different combi
 | LAB        | 10           | 8               | 
 | LAB        | 10           | 16              | 
 
+### Step 4: Pick a best combination of Color Space, Orientations, Pixels per cell to use in extracting the image features and train a classifier using SVM.
 
 After training the classifier on all the above mentioned combinations, this is the summary of the results. Looking at the results below, one can say that clearly YUV Color space with 11 orientations and 16 Pixels per cell is the winner considering the very low training time and highest accuracy.
 
@@ -116,6 +117,33 @@ After training the classifier on all the above mentioned combinations, this is t
 | YCrCb      | 11           | 16              | 126.08               | 1.21          | 97.83    | 
 | LAB        | 10           | 8               | 167.61               | 8.58          | 97.8     | 
 | LAB        | 10           | 16              | 158.7                | 1.11          | 97.61    | 
+
+Hence I have chosen YUV with 11 Orientations and 16 Pixels per cell as my Hog Parameters to train the SVM Classifier
+
+**Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).**
+
+In the section titled "Train a Classifier" I trained a linear SVM with the default classifier parameters and using HOG features alone and was able to achieve a test accuracy of 98.68%.
+
+```
+# Use a linear SVC 
+svc = LinearSVC()
+# Check the training time for the SVC
+t = time.time()
+svc.fit(X_train, y_train)
+t2 = time.time()
+print(round(t2-t, 2), 'Seconds to train SVC...')
+# Check the score of the SVC
+print('Test Accuracy of SVC = ', round(svc.score(X_test, y_test), 4))
+# Check the prediction time for a single sample
+t=time.time()
+n_predict = 10
+print('My SVC predicts: ', svc.predict(X_test[0:n_predict]))
+print('For these',n_predict, 'labels: ', y_test[0:n_predict])
+t2 = time.time()
+print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
+```
+
+### Step 5: Define methods to find cars using the Classifier and searching in the ROI, Apply Heatmap and thresholds to identify false positives, Draw bounding boxes around identified vehicles. 
 
 
 
