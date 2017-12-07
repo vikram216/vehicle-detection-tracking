@@ -11,6 +11,27 @@ Main goal of this project is to create a software pipeline to detect and track v
 3. Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 4. Estimate a bounding box for vehicles detected.
 
+The steps that I followed in this project are the following:
+
+**Step 1:** Define helper functions and load Training data and Visualize some sample images.       
+**Step 2:** Convert Image to HOG (Histogram of Oriented Gradients) and Visualize them using helper functions.          
+**Step 3:** Extract Features for Input Datasets and Combine, Define Labels Vector, Shuffle and Split training data into training and testing sets.                 
+**Step 4:** Pick a best combination of Color Space, Orientations, Pixels per cell to use in extracting the image features and train a classifier using SVM.                   
+**Step 5:** Define methods to find cars using the Classifier and searching in the ROI, Apply Heatmap and thresholds to identify false positives, Draw bounding boxes around identified vehicles.                
+**Step 6:** Build a pipeline combining the methods mentioned in step 5 and test it on sample images.           
+**Step 7:** Define a class to store the identified bounding boxes from the previous video frame, build a pipeline for processing video frames.               
+**Step 8:** Run the video through the pipeline.            
+
+I have used the following software/libraries in this project
+
+1. Python 3.5
+2. Numpy
+3. OpenCV
+4. Matplotlib
+5. Moviepy
+6. SciKit
+7. SciPy
+
 
 **Vehicle Detection Project**
 
