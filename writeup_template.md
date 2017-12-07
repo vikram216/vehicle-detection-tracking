@@ -46,6 +46,8 @@ I have started by loading the training data and checked the number of images in 
 
 ![Sample Images](folder_for_writeup/car_non_car_samples.png)
 
+**Explain how (and identify where in your code) you extracted HOG features from the training images.**
+
 Then I have used the method ```get_hog_features``` using the following code snippet to extract hog features for a sample car image and non-car image. The figure below shows a comparison of a car image and its associated histogram of oriented gradients, as well as the same for a non-car image.
 
 ```
