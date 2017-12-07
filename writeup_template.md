@@ -1,7 +1,16 @@
 # Udacity Self Driving Car Nano Degree Project 5: Vehicle detection and tracking
 
-Main goal of this project is to create a software pipeline to detect and track vehicles in a video stream from a front facing camera of a car using computer vision and Machine Learning. 
+![Final outcome](folder_for_writeup/result.gif)
 ---
+## Project Goals
+
+Main goal of this project is to create a software pipeline to detect and track vehicles in a video stream from a front facing camera of a car using computer vision and Machine Learning using the following steps:
+
+1. Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a Linear SVM classifier. Optionally, you can also apply a color transform and append binned color features, as well as histograms of color, to your HOG feature vector.
+2. Implement a sliding-window technique and use your trained classifier to search for vehicles in images.
+3. Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
+4. Estimate a bounding box for vehicles detected.
+
 
 **Vehicle Detection Project**
 
