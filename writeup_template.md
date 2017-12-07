@@ -46,6 +46,28 @@ I have started by loading the training data and checked the number of images in 
 
 ![Sample Images](folder_for_writeup/car_non_car_samples.png)
 
+Then I have used the method ```get_hog_features``` using the following code snippet to extract hog features for a sample car image and non-car image. The figure below shows a comparison of a car image and its associated histogram of oriented gradients, as well as the same for a non-car image.
+
+```
+car_img = mpimg.imread(car_images[25])
+_, car_dst = get_hog_features(car_img[:,:,2], 9, 8, 8, vis=True, feature_vec=True)
+noncar_img = mpimg.imread(noncar_images[25])
+_, noncar_dst = get_hog_features(noncar_img[:,:,2], 9, 8, 8, vis=True, feature_vec=True)
+
+# Visualize 
+f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(7,7))
+f.subplots_adjust(hspace = .4, wspace=.2)
+ax1.imshow(car_img)
+ax1.set_title('Car Image', fontsize=16)
+ax2.imshow(car_dst, cmap='gray')
+ax2.set_title('Car HOG', fontsize=16)
+ax3.imshow(noncar_img)
+ax3.set_title('Non-Car Image', fontsize=16)
+ax4.imshow(noncar_dst, cmap='gray')
+ax4.set_title('Non-Car HOG', fontsize=16)
+```
+
+![hog](folder_for_writeup/hog_car_non_car.png)
 
 
 
