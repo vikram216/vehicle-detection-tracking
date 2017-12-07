@@ -1,6 +1,6 @@
-## Writeup Template
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+# Udacity Self Driving Car Nano Degree Project 5: Vehicle detection and tracking
 
+Main goal of this project is to create a software pipeline to detect and track vehicles in a video stream from a front facing camera of a car using computer vision and Machine Learning. 
 ---
 
 **Vehicle Detection Project**
