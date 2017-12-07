@@ -71,6 +71,54 @@ ax4.set_title('Non-Car HOG', fontsize=16)
 
 ![hog](folder_for_writeup/hog_car_non_car.png)
 
+### Step 3: Extract Features for Input Datasets and Combine, Define Labels Vector, Shuffle and Split training data into training and testing sets.
+
+Here I have made use of ```extract_features``` method that accepts a list of image paths and HOG parameters and produces a flattened array of HOG features for each image in the list. I have experimented with multiple Color space, Orientation and pixels per cell combinations before choosing the best possible combination that is working for this project. 
+
+**Explain how you settled on your final choice of HOG parameters.**
+
+Initially I tested for the time taken for Feature Extraction for different combinations of Color space, Orientation and Pixels per cell with a sample of first 100 car and non-car images. Then I took from each color space one combination that takes moderate amount of time and one combination the takes least amount of time to extract the features and tried them for the entire training dataset to find the best possible training accuracy and training time to pick one possible combination that I think will work fine for the Vehicle detection and Tracking pipeline. Below is the list of combinations that I tried
+
+
+| Colorspace | Orientations | Pixels_Per_Cell | 
+|------------|--------------|-----------------| 
+| RGB        | 9            | 8               | 
+| RGB        | 11           | 16              | 
+| HLS        | 9            | 8               | 
+| HLS        | 11           | 16              | 
+| HSV        | 10           | 8               | 
+| HSV        | 11           | 16              | 
+| LUV        | 9            | 8               | 
+| LUV        | 11           | 16              | 
+| YUV        | 9            | 8               | 
+| YUV        | 11           | 16              | 
+| YCrCb      | 9            | 8               | 
+| YCrCb      | 11           | 16              | 
+| LAB        | 10           | 8               | 
+| LAB        | 10           | 16              | 
+
+
+After training the classifier on all the above mentioned combinations, this is the summary of the results. Looking at the results below, one can say that clearly YUV Color space with 11 orientations and 16 Pixels per cell is the winner considering the very low training time and highest accuracy.
+
+| Colorspace | Orientations | Pixels_Per_Cell | Feature_extract_time | Training_Time | Accuracy | 
+|------------|--------------|-----------------|----------------------|---------------|----------| 
+| RGB        | 9            | 8               | 182.32               | 17.38         | 96.85    | 
+| RGB        | 11           | 16              | 133.65               | 3.09          | 97.07    | 
+| HLS        | 9            | 8               | 183.36               | 8.16          | 98.17    | 
+| HLS        | 11           | 16              | 146.95               | 1.83          | 97.47    | 
+| HSV        | 10           | 8               | 185                  | 7.91          | 98.37    | 
+| HSV        | 11           | 16              | 172.7                | 1.33          | 97.97    | 
+| LUV        | 9            | 8               | 160.45               | 10.61         | 97.78    | 
+| LUV        | 11           | 16              | 147.25               | 1.24          | 97.86    | 
+| YUV        | 9            | 8               | 158.3                | 7.51          | 98.42    | 
+| YUV        | 11           | 16              | 144.57               | 1.61          | 98.68    | 
+| YCrCb      | 9            | 8               | 160.07               | 9.34          | 98.17    | 
+| YCrCb      | 11           | 16              | 126.08               | 1.21          | 97.83    | 
+| LAB        | 10           | 8               | 167.61               | 8.58          | 97.8     | 
+| LAB        | 10           | 16              | 158.7                | 1.11          | 97.61    | 
+
+
+
 
 
 **Vehicle Detection Project**
