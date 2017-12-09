@@ -145,6 +145,31 @@ print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 
 ### Step 5: Define methods to find cars using the Classifier and searching in the ROI, Apply Heatmap and thresholds to identify false positives, Draw bounding boxes around identified vehicles. 
 
+I have defined a method ```find_cars``` that combines ```get_hog_features``` and a sliding window search, but rather than performing feature extraction on each window individually which can be time consuming, the HOG features are extracted for the entire region of interest in the image and then these full-image features are subsampled according to the size of the window and then fed to the classifier. The method performs the classifier prediction on the HOG features for each window region and returns a list of rectangle objects corresponding to the windows that generated a positive prediction.
+
+Here is a sample image that uses ```find_cars``` with a single window size.
+
+![hog](folder_for_writeup/cars_found.png)
+
+Here is the code snippet used to generate the above image
+
+```
+test_img = mpimg.imread('./test_images/test5.jpg')
+
+ystart = 400
+ystop = 656
+scale = 1.5
+colorspace = 'YUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 11
+pix_per_cell = 16
+cell_per_block = 2
+hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
+
+rectangles = find_cars(test_img, ystart, ystop, scale, colorspace, hog_channel, svc, None, orient, 
+                       pix_per_cell, cell_per_block, None, None)
+
+print(len(rectangles), 'rectangles found in image')
+```
 
 
 
