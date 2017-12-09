@@ -151,6 +151,8 @@ Here is a sample image that uses ```find_cars``` with a single window size.
 
 ![hog](folder_for_writeup/cars_found.png)
 
+**Describe how (and identify where in your code) you implemented a sliding window search. How did you decide what scales to search and how much to overlap windows?**
+
 Here is the code snippet used to generate the above image
 
 ```
@@ -170,6 +172,15 @@ rectangles = find_cars(test_img, ystart, ystop, scale, colorspace, hog_channel, 
 
 print(len(rectangles), 'rectangles found in image')
 ```
+
+I explored several configurations of window sizes and positions, with various overlaps in the X and Y directions. The following images show the configurations of all search windows for 1x, 1.5x and 3x windows:
+
+![hog](folder_for_writeup/draw_rectangles_small_scale.png)            
+![hog](folder_for_writeup/draw_rectangles_medium_scale.png)               
+![hog](folder_for_writeup/draw_rectangles_big_scale.png)               
+
+
+
 
 
 
