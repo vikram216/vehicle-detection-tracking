@@ -173,112 +173,49 @@ rectangles = find_cars(test_img, ystart, ystop, scale, colorspace, hog_channel, 
 print(len(rectangles), 'rectangles found in image')
 ```
 
-I explored several configurations of window sizes and positions, with various overlaps in the X and Y directions. The following images show the configurations of all search windows for 1x, 1.5x and 3x windows:
+I explored several configurations of window sizes and positions, with various overlaps in the X and Y directions. The following images show the configurations of all search windows for 1x, 2x and 3x windows:
 
 ![hog](folder_for_writeup/draw_rectangles_small_scale.png)            
 ![hog](folder_for_writeup/draw_rectangles_medium_scale.png)               
-![hog](folder_for_writeup/draw_rectangles_big_scale.png)               
+![hog](folder_for_writeup/draw_rectangles_bigscale.png)       
 
+The final algorithm calls ```find_cars``` for each window scale and the rectangles returned from each method call are aggregated.  Overlap was set to 50% in both X and Y directions. Additionally, only an appropriate vertical range of the image is considered for each window size (e.g. smaller range for smaller scales) to reduce the chance for false positives in areas where cars at that scale are unlikely to appear. The final implementation is done with 190 window locations, which proved to be robust enough to reliably detect vehicles while maintaining a high speed of execution.
 
+The image below shows the rectangles returned by ```find_cars``` drawn onto one of the test images in the final implementation. Notice that there are several positive predictions on each of the near-field cars, and one false positive prediction on a car in the oncoming lane.
 
+![hog](folder_for_writeup/sliding_window.png) 
 
+Because a true positive is typically accompanied by several positive detections, while false positives are typically accompanied by only one or two detections, a combined heatmap and threshold is used to differentiate the two. The ```add_heat``` function increments the pixel value (referred to as "heat") of an all-black image the size of the original image at the location of each detection rectangle. Areas encompassed by more overlapping rectangles are assigned higher levels of heat. The following image is the resulting heatmap from the detections in the image above:
 
+![hog](folder_for_writeup/heatmap.png)       
 
+A threshold is applied to the heatmap (in this example, with a value of 1), setting all pixels that don't exceed the threshold to zero. The result is below:
 
-**Vehicle Detection Project**
+![hog](folder_for_writeup/heatmap_withthreshold.png) 
 
-The goals / steps of this project are the following:
+### Step 6: Build a pipeline combining the methods mentioned in step 5 and test it on sample images. 
 
-* Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier
-* Optionally, you can also apply a color transform and append binned color features, as well as histograms of color, to your HOG feature vector. 
-* Note: for those first two steps don't forget to normalize your features and randomize a selection for training and testing.
-* Implement a sliding-window technique and use your trained classifier to search for vehicles in images.
-* Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
-* Estimate a bounding box for vehicles detected.
+I have defined a method ```process_frame``` combining the ```find_cars``` along with sliding windows with multiple window sizes and ran the pipeline on all the test images. This produced the following result:
 
-[//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
+**Show some examples of test images to demonstrate how your pipeline is working. What did you do to optimize the performance of your classifier**
 
-## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
+![hog](folder_for_writeup/vehicle_detection_test_images.png)
 
----
-### Writeup / README
+The final implementation performs very well, identifying the near-field vehicles in each of the images with no false positives.
 
-#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Vehicle-Detection/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
+The first implementation did not perform as well, so I began by optimizing the SVM classifier. The original classifier used HOG features from the RGB color space with 9 orientations and 8 pixels per cell, and achieved a test accuracy of 96.85%. Using YUV color space with all three channels increased the accuracy to 98.68%, also tripled the execution time. However, changing the pixels_per_cell parameter from 8 to 16 produced a roughly ten-fold increase in execution speed with minimal cost to accuracy.
 
-You're reading it!
+### Step 7 & 8: Define a class to store the identified bounding boxes from the previous video frame, build a pipeline for processing video frames, Run the video through the pipeline. 
 
-### Histogram of Oriented Gradients (HOG)
+**Provide a link to your final video output. Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)**
 
-#### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
+Here is a link to my final video [result ](https://youtu.be/mtT3lHNqlOQ)
 
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+I have defined a class ```Vehicle_Detect``` to store the detections returned by ```find_cars``` from the previous 15 frames of video using the ```prev_rects``` parameter. 
 
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
+**Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.**
 
-![alt text][image1]
-
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
-
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
-
-
-![alt text][image2]
-
-#### 2. Explain how you settled on your final choice of HOG parameters.
-
-I tried various combinations of parameters and...
-
-#### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
-
-I trained a linear SVM using...
-
-### Sliding Window Search
-
-#### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
-
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
-
-![alt text][image3]
-
-#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
-
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
-
-![alt text][image4]
----
-
-### Video Implementation
-
-#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
-
-
-#### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
-
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
-
-### Here are six frames and their corresponding heatmaps:
-
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
-
+The video processing pipeline is similar to the pipeline built for processing images except that it makes use of the ```Vehicle_Detect``` class to use the detections for the past 15 frames. These detections are combined and added to the heatmap and the threshold for the heatmap is set to ``` 1 + len(det.prev_rects)//2 ``` (one more than half the number of rectangle sets contained in the history) - this value was found to perform best empirically (rather than using a single scalar, or the full number of rectangle sets in the history).
 
 ---
 
@@ -286,5 +223,13 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+The problems that I faced while implementing this project were mainly concerned with detection accuracy. Balancing the accuracy of the classifier with execution speed was crucial. Scanning 190 windows using a classifier that achieves 98.68% accuracy should result in around 4 misidentified windows per frame. Of course, integrating detections from previous frames mitigates the effect of the misclassifications, but it also introduces another problem: vehicles that significantly change position from one frame to the next (e.g. oncoming traffic) will tend to escape being labeled. Producing a very high accuracy classifier and maximizing window overlap might improve the per-frame accuracy to the point that integrating detections from previous frames is unnecessary (and oncoming traffic is correctly labeled), but it would also be far from real-time without massive processing power.
+
+The pipeline is probably most likely to fail in cases where vehicles don't resemble those in the training dataset, but lighting and environmental conditions might also play a role (e.g. a white car against a white background). As stated above, oncoming cars are an issue, as well as distant cars.
+
+I believe that the best approach, given plenty of time to pursue it, would be to combine a very high accuracy classifier with high overlap in the search windows. The execution cost could be offset with more intelligent tracking strategies, such as:
+
+* determine vehicle location and speed to predict its location in subsequent frames
+* begin with expected vehicle locations and nearest (largest scale) search areas, and preclude overlap and redundant detections from smaller scale search areas to speed up execution
+* use a convolutional neural network, to preclude the sliding window search altogether
 
